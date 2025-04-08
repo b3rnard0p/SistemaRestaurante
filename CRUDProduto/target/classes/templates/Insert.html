@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar</title>
+</head>
+<body>
+<h1>Minha página de cadastro</h1>
+<form th:action ="@{/produto}" method="post" th:object="${produto}">
+    <label>Nome:</label>
+    <input type="text" th:field="*{nome}"/><br/><br/>
+
+    <label>Descrição:</label>
+    <input type="text" th:field="*{descricao}"/><br/><br/>
+
+    <label>Perço:</label>
+    <input type="number" th:field="*{preco}"/><br/><br/>
+
+    <label>Categoria:</label>
+    <select th:field="*{categoria}" class="form-control">
+        <option value="">Selecione uma categoria</option>
+        <option th:each="cat : ${T(com.example.pratica2.models.Categoria).values()}"
+                th:value="${cat}"
+                th:text="${cat.nome}">
+        </option>
+    </select><br/><br/>
+
+    <label>Status:</label>
+    <input type="text" th:field="*{status}"/><br/><br/>
+
+    <label>Imagem:</label>
+    <input type="text" th:field="*{imagemUrl}"/><br/><br/>
+
+    <button type="submit">Salvar</button>
+</form>
+</body>
+</html>
