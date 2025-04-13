@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        function toggleCategoryMenu() {
+            const menu = document.getElementById('categoryMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function filterByCategory(category) {
+            // Esconde todas as categorias
+            document.querySelectorAll('[data-category]').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // Mostra apenas a categoria selecionada (ou todas se for 'todas')
+            if (category === 'todas') {
+                document.querySelectorAll('[data-category]').forEach(el => {
+                    el.classList.remove('hidden');
+                });
+            } else {
+                document.querySelectorAll(`[data-category="${category}"]`).forEach(el => {
+                    el.classList.remove('hidden');
+                });
+            }
+
+            // Fecha o menu
+            toggleCategoryMenu();
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+<!-- Navbar -->
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+            <button onclick="toggleCategoryMenu()" class="text-gray-600 hover:text-gray-900">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h1 class="text-xl font-bold text-gray-800">Cardápio</h1>
+        </div>
+        <div class="flex space-x-4">
+            <a th:href="@{/carrinho}" class="flex items-center text-gray-600 hover:text-gray-900">
+                <i class="fas fa-shopping-cart mr-2"></i>
+                Carrinho
+            </a>
+            <a th:href="@{/comanda}" class="flex items-center text-gray-600 hover:text-gray-900">
+                <i class="fas fa-receipt mr-2"></i>
+                Comanda
+            </a>
+            <a
+                    th:href="@{/usuario/login}"
+                    class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition duration-200"
+            >
+                Sair
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Menu lateral de categorias -->
+<div id="categoryMenu" class="hidden fixed inset-0 z-40">
+    <div class="fixed inset-0 bg-black bg-opacity-50" onclick="toggleCategoryMenu()"></div>
+    <div class="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 overflow-y-auto">
+        <div class="p-4 border-b">
+            <h2 class="text-lg font-semibold text-gray-800">Categorias</h2>
+        </div>
+        <ul class="py-2">
+            <li>
+                <button
+                        onclick="filterByCategory('todas')"
+                        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                >
+                    Todas as categorias
+                </button>
+            </li>
+            <li th:each="categoria : ${ProdutosByStatus.disponiveis.keySet()}">
+                <button
+                        th:data-category="${categoria}"
+                        onclick="filterByCategory(this.getAttribute('data-category'))"
+                        class="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
+                        th:text="${categoria}"
+                >
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- Conteúdo principal -->
+<div class="container mx-auto px-4 py-8">
+    <div th:each="categoriaEntry : ${ProdutosByStatus.disponiveis}">
+        <div th:attr="data-category=${categoriaEntry.key}">
+            <h3
+                    class="text-xl font-medium text-gray-600 mt-6 mb-3"
+                    th:text="${categoriaEntry.key}"
+            ></h3>
+
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-green-50">
+                    <tr>
+                        <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                            Nome
+                        </th>
+                        <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                            Descrição
+                        </th>
+                        <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                            Preço
+                        </th>
+                        <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                            Imagem
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tr
+                            th:each="p : ${categoriaEntry.value}"
+                            class="hover:bg-gray-50"
+                    >
+                        <td
+                                class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"
+                                th:text="${p.nome}"
+                        ></td>
+                        <td
+                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                th:text="${p.descricao}"
+                        ></td>
+                        <td
+                                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
+                                th:text="${#numbers.formatDecimal(p.preco, 1, 2, 'POINT')}"
+                        ></td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <img
+                                    th:src="${p.imagemUrl}"
+                                    width="100"
+                                    th:alt="${p.nome}"
+                                    class="rounded-md object-cover h-16 w-16"
+                            />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
