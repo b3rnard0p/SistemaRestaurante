@@ -40,7 +40,7 @@ public class ProdutoController {
     @PostMapping
     public String create(@ModelAttribute Produto produto) {
         System.out.println(produto.toString());
-        produtoRepository.save(produto);a
+        produtoRepository.save(produto);
         return "redirect:/produto/list";
     }
 
