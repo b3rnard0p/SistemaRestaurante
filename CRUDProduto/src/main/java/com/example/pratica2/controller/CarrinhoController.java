@@ -19,7 +19,7 @@ public class CarrinhoController {
         this.carrinhoService = carrinhoService;
     }
 
-    @GetMapping
+    @GetMapping("/carrinho")
     public String visualizarCarrinho(Model model) {
         var itens = carrinhoService.listarItensCarrinho();
         double total = carrinhoService.calcularValorTotal();
